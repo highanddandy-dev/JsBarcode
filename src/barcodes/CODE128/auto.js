@@ -31,6 +31,10 @@ function autoSelectFromAB(string, isA){
 	);
 }
 
+function matchesAMoreThanB(string) {
+	return matchSetALength(string) > matchSetBLength(string);
+}
+
 // CODE128C
 function autoSelectFromC(string) {
 	const cMatch = matchSetC(string);
@@ -43,7 +47,7 @@ function autoSelectFromC(string) {
 	string = string.substring(length);
 
 	// Select A/B depending on the longest match
-	const isA = matchSetALength(string) >= matchSetBLength(string);
+	const isA = matchesAMoreThanB(string);
 	return cMatch + String.fromCharCode(isA ? 206 : 205) + autoSelectFromAB(string, isA);
 }
 
@@ -57,7 +61,7 @@ export default (string) => {
 		newString = C_START_CHAR + autoSelectFromC(string);
 	} else {
 		// Select A/B depending on the longest match
-		const isA = matchSetALength(string) > matchSetBLength(string);
+		const isA = matchesAMoreThanB(string);
 		newString = (isA ? A_START_CHAR : B_START_CHAR) + autoSelectFromAB(string, isA);
 	}
 
